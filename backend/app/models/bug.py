@@ -28,7 +28,7 @@ class Bug(Base):
 
     # user writed fields
     raw_description = Column(Text, nullable=False)
-    reporter_email = Column(String(255), nullable=False)
+    reporter_email = Column(String(255), nullable=True)
     reporter_name = Column(String(100), nullable=True)
     source_app = Column(String(100), nullable=True)
 
@@ -42,7 +42,7 @@ class Bug(Base):
     title = Column(String(255), nullable=True)
     severity = Column(Enum(SeverityLevel), nullable=True, index=True)
     module = Column(String(100), nullable=True, index=True)
-    reproduccion_steps = Column(Text, nullable=True)
+    reproduction_steps = Column(Text, nullable=True)
     suggested_fix = Column(Text, nullable=True)
     ai_summary = Column(Text, nullable=True)
     ai_confidence = Column(Integer, nullable=True)

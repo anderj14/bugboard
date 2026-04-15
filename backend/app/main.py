@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.database.connection import engine, Base
+from app.routers import bugs
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,6 +31,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(bugs.router, prefix="/api/bugs", tags=["bugs"])
 
 @app.get("/")
 def root():
