@@ -11,7 +11,7 @@ class BugContext (BaseModel):
     screen_resolution: Optional[str] = None
 
 # This is the schema for creating a bug report
-class CreateBugReport(BaseModel):
+class CreateBugRequest(BaseModel):
     raw_description: str
     reporter_email: Optional[str] = None
     reporter_name: Optional[str] = None

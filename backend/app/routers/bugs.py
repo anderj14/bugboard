@@ -4,7 +4,7 @@ from uuid import UUID
 from typing import List
 from app.database.connection import get_db
 from app.models.bug import Bug, BugStatus
-from app.schemas.bug import CreateBugReport, BugResponse
+from app.schemas.bug import CreateBugRequest, BugResponse
 from app.services.ollama import classify_bug
 
 router = APIRouter()
@@ -36,7 +36,7 @@ def find_duplicate(db: Session, module: str, title: str, exclude_id=None) -> Bug
 
 # This endpoint receives a bug report, classifies it using the Ollama API, and saves it to the database
 @router.post("/", response_model=BugResponse, status_code=201)
-async def create_bug(payload: CreateBugReport, db: Session = Depends(get_db)):
+async def create_bug(payload: CreateBugRequest, db: Session = Depends(get_db)):
     try:
         context_dict = payload.context.model_dump() if payload.context else None
         classification = await classify_bug(payload.raw_description, context_dict)
@@ -115,3 +115,34 @@ def update_status(bug_id: UUID, payload: dict, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(bug)
     return bug
+
+# This endpoint allows users to preview the AI classification of a bug report without saving it to the database
+@router.post("/preview", response_model=BugResponse, status_code=200)
+async def preview_bug(payload: CreateBugRequest, db: Session = Depends(get_db)):
+    try:
+        context_dict = payload.context.model_dump() if payload.context else None
+        classification = await classify_bug(payload.raw_description, context_dict)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Ollama error: {str(e)}")
+    
+    #response a temporary bug without id
+    from uuid import uuid4
+    from datetime import datetime, timezone
+    
+    return {
+        "id": uuid4(),
+        "raw_description": payload.raw_description,
+        "title": classification.get("title"),
+        "severity": classification.get("severity").upper(),
+        "module": classification.get("module").lower(),
+        "reproduction_steps": classification.get("reproduction_steps"),
+        "suggested_fix": classification.get("suggested_fix"),
+        "ai_summary": classification.get("ai_summary"),
+        "ai_confidence": classification.get("ai_confidence"),
+        "status": "Open",
+        "is_duplicate": False,
+        "browser": None,
+        "operating_system": None,
+        "current_url": None,
+        "created_at": datetime.now(timezone.utc),
+    }

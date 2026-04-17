@@ -33,7 +33,7 @@ class Bug(Base):
     source_app = Column(String(100), nullable=True)
 
     # Automatic Context from browser
-    browser = Column(String(100), nullable=True)
+    browser = Column(String(500), nullable=True)
     operating_system = Column(String(100), nullable=True)
     current_url = Column(String(500), nullable=True)
     screen_resolution = Column(String(50), nullable=True)
