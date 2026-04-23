@@ -41,4 +41,8 @@ export class BugService {
   classifyPreview(description: string): Observable<Bug> {
     return this.http.post<Bug>(this.apiUrl + '/preview', { raw_description: description });
   }
+
+  updateStatus(id: string, status: string): Observable<Bug> {
+    return this.http.patch<Bug>(`${this.apiUrl}/${id}/status`, { status });
+  }
 }
