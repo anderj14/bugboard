@@ -26,74 +26,74 @@ import { BugService } from '../../../core/services/bug-service';
       <!-- widget -->
       @if (isOpen) {
         <div
-          class="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-96 p-6"
+          class="bg-white border border-gray-200 rounded-2xl shadow-2xl w-96 p-6"
         >
           <!-- Header -->
           <div class="flex justify-between items-center mb-4">
-            <h3 class="text-white font-semibold text-lg">Report a Bug</h3>
+            <h3 class="text-gray-900 font-semibold text-lg">Report a Bug</h3>
             <button
               (click)="closeWidget()"
-              class="text-slate-400 hover:text-white text-xl"
+              class="text-gray-400 hover:text-gray-700 text-xl"
             >✕</button>
           </div>
 
           @if (!submitted) {
             <div class="text-center py-8">
               <div class="text-4xl mb-3">✅</div>
-              <p class="text-white font-medium">Bug reported!</p>
-              <p class="text-slate-400 text-sm mt-1">Our AI classified it as</p>
+              <p class="text-gray-900 font-medium">Bug reported!</p>
+              <p class="text-gray-500 text-sm mt-1">Our AI classified it as</p>
               <span class="inline-block mt-2 px-3 py-1 rounded-full text-sm font-medium"
                 [ngClass]="severityClass(lastBug?.severity)">
                 {{ lastBug?.severity }} — {{ lastBug?.module }}
               </span>
               <button
                 (click)="submitted = false; isOpen = false"
-                class="mt-4 block w-full text-slate-400 text-sm hover:text-white"
+                class="mt-4 block w-full text-gray-400 text-sm hover:text-gray-700"
               >Close</button>
             </div>
           }
-          
+
 
           @if (!submitted) {
             <form [formGroup]="form" (ngSubmit)="submit()">
-            
+
             <div class="mb-4">
-              <label class="text-slate-300 text-sm mb-1 block">
+              <label class="text-gray-700 text-sm mb-1 block">
                 What went wrong?
               </label>
               <textarea
                 formControlName="description"
                 rows="4"
                 placeholder="Describe the bug in your own words..."
-                class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white text-sm resize-none focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-900 text-sm resize-none focus:outline-none focus:border-blue-500 placeholder-gray-400"
               ></textarea>
 
               @if (preview) {
               <div class="mt-2 flex gap-2 items-center flex-wrap">
-                <span class="text-slate-400 text-xs">AI preview:</span>
+                <span class="text-gray-500 text-xs">AI preview:</span>
                 <span class="px-2 py-0.5 rounded-full text-xs font-medium"
                   [ngClass]="severityClass(preview.severity)">
                   {{ preview.severity }}
                 </span>
-                <span class="px-2 py-0.5 rounded-full text-xs bg-slate-700 text-slate-300">
+                <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600">
                   {{ preview.module }}
                 </span>
               </div>
               }
               @if (classifying) {
-              <div class="mt-2 text-slate-400 text-xs animate-pulse">
+              <div class="mt-2 text-gray-400 text-xs animate-pulse">
                 AI is analyzing...
               </div>
               }
             </div>
 
             <div class="mb-4">
-              <label class="text-slate-300 text-sm mb-1 block">Your name (optional)</label>
+              <label class="text-gray-700 text-sm mb-1 block">Your name (optional)</label>
               <input
                 formControlName="name"
                 type="text"
                 placeholder="Anderson"
-                class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-blue-500 placeholder-slate-500"
+                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-900 text-sm focus:outline-none focus:border-blue-500 placeholder-gray-400"
               />
             </div>
 
@@ -101,12 +101,12 @@ import { BugService } from '../../../core/services/bug-service';
             <button
               type="submit"
               [disabled]="form.invalid || loading"
-              class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded-lg py-3 text-sm font-medium transition-colors"
+              class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg py-3 text-sm font-medium transition-colors"
             >
               {{ loading ? 'Sending...' : 'Submit Bug Report' }}
             </button>
 
-            <p class="text-slate-500 text-xs mt-3 text-center">
+            <p class="text-gray-400 text-xs mt-3 text-center">
               Browser context captured automatically
             </p>
             </form>
@@ -211,10 +211,10 @@ export class BugWidget implements OnDestroy {
   severityClass(severity?: string): object {
     const s = severity?.toLowerCase();
     return {
-      'bg-red-500/20 text-red-400': s === 'critical',
-      'bg-orange-500/20 text-orange-400': s === 'high',
-      'bg-yellow-500/20 text-yellow-400': s === 'medium',
-      'bg-green-500/20 text-green-400': s === 'low',
+      'bg-red-100 text-red-600': s === 'critical',
+      'bg-orange-100 text-orange-600': s === 'high',
+      'bg-yellow-100 text-yellow-600': s === 'medium',
+      'bg-green-100 text-green-600': s === 'low',
     };
   }
 

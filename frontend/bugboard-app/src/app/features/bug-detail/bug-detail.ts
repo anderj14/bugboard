@@ -8,17 +8,17 @@ import { Bug } from '../../core/models/bug';
   selector: 'app-bug-detail',
   imports: [CommonModule],
   template: `
-    <div class="min-h-screen bg-slate-900 p-6">
+    <div class="min-h-screen bg-gray-50 p-6">
 
       <!-- Back -->
       <button
         (click)="router.navigate(['/dashboard'])"
-        class="text-slate-400 hover:text-white text-sm mb-6 flex items-center gap-2"
+        class="text-gray-500 hover:text-gray-900 text-sm mb-6 flex items-center gap-2"
       >
         ← Back to dashboard
       </button>
       @if (loading()) {
-        <div class="text-slate-400 text-center py-12">
+        <div class="text-gray-500 text-center py-12">
           Loading...
         </div>
       }
@@ -33,17 +33,17 @@ import { Bug } from '../../core/models/bug';
                   [ngClass]="severityClass(bug()!.severity)">
                   {{ bug()!.severity }}
                 </span>
-                <span class="px-3 py-1 rounded-full text-sm bg-slate-700 text-slate-300">
+                <span class="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-600">
                   {{ bug()!.module }}
                 </span>
                 @if (bug()!.is_duplicate){
-                  <span class="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400">
+                  <span class="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-600">
                     possible duplicate
                   </span>
                 }
               </div>
-              <h1 class="text-white text-2xl font-bold">{{ bug()!.title }}</h1>
-              <p class="text-slate-400 text-sm mt-1">
+              <h1 class="text-gray-900 text-2xl font-bold">{{ bug()!.title }}</h1>
+              <p class="text-gray-500 text-sm mt-1">
                 Reported {{ bug()!.created_at | date:'MMM d, y h:mm a' }}
                 @if (bug()!.reporter_name){
                   <span> by {{ bug()!.reporter_name }}</span>
@@ -55,7 +55,7 @@ import { Bug } from '../../core/models/bug';
             <select
               [value]="bug()!.status"
               (change)="updateStatus($event)"
-              class="bg-slate-800 border border-slate-600 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+              class="bg-white border border-gray-300 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
             >
               <option value="Open">Open</option>
               <option value="In_progress">In Progress</option>
@@ -70,45 +70,45 @@ import { Bug } from '../../core/models/bug';
             <div class="col-span-2 space-y-6">
 
               <!-- Descripción original -->
-              <div class="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                <h2 class="text-slate-400 text-xs uppercase tracking-wider mb-3">
+              <div class="bg-white rounded-xl p-5 border border-gray-200">
+                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
                   User report
                 </h2>
-                <p class="text-white">{{ bug()!.raw_description }}</p>
+                <p class="text-gray-900">{{ bug()!.raw_description }}</p>
               </div>
 
               <!-- Resumen IA -->
-              <div class="bg-blue-500/10 rounded-xl p-5 border border-blue-500/20">
-                <h2 class="text-blue-400 text-xs uppercase tracking-wider mb-3">
+              <div class="bg-blue-50 rounded-xl p-5 border border-blue-200">
+                <h2 class="text-blue-600 text-xs uppercase tracking-wider mb-3">
                   AI Summary
                 </h2>
-                <p class="text-white">{{ bug()!.ai_summary }}</p>
+                <p class="text-gray-900">{{ bug()!.ai_summary }}</p>
                 <div class="mt-3 flex items-center gap-2">
-                  <span class="text-slate-400 text-xs">AI confidence</span>
-                  <div class="flex-1 bg-slate-700 rounded-full h-1.5">
+                  <span class="text-gray-500 text-xs">AI confidence</span>
+                  <div class="flex-1 bg-gray-200 rounded-full h-1.5">
                     <div
                       class="bg-blue-500 h-1.5 rounded-full"
                       [style.width.%]="bug()!.ai_confidence"
                     ></div>
                   </div>
-                  <span class="text-blue-400 text-xs">{{ bug()!.ai_confidence }}%</span>
+                  <span class="text-blue-600 text-xs">{{ bug()!.ai_confidence }}%</span>
                 </div>
               </div>
 
               <!-- Pasos de reproducción -->
-              <div class="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                <h2 class="text-slate-400 text-xs uppercase tracking-wider mb-3">
+              <div class="bg-white rounded-xl p-5 border border-gray-200">
+                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
                   Reproduction steps
                 </h2>
-                <p class="text-white whitespace-pre-line">{{ bug()!.reproduction_steps }}</p>
+                <p class="text-gray-900 whitespace-pre-line">{{ bug()!.reproduction_steps }}</p>
               </div>
 
               <!-- Fix sugerido -->
-              <div class="bg-green-500/10 rounded-xl p-5 border border-green-500/20">
-                <h2 class="text-green-400 text-xs uppercase tracking-wider mb-3">
+              <div class="bg-green-50 rounded-xl p-5 border border-green-200">
+                <h2 class="text-green-600 text-xs uppercase tracking-wider mb-3">
                   Suggested fix
                 </h2>
-                <p class="text-white">{{ bug()!.suggested_fix }}</p>
+                <p class="text-gray-900">{{ bug()!.suggested_fix }}</p>
               </div>
 
             </div>
@@ -117,47 +117,47 @@ import { Bug } from '../../core/models/bug';
             <div class="space-y-4">
 
               <!-- Contexto del browser -->
-              <div class="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                <h2 class="text-slate-400 text-xs uppercase tracking-wider mb-3">
+              <div class="bg-white rounded-xl p-5 border border-gray-200">
+                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
                   Browser context
                 </h2>
                 <div class="space-y-2">
                   @if (bug()!.browser) {
                     <div>
-                      <p class="text-slate-500 text-xs">Browser</p>
-                      <p class="text-white text-sm">{{ bug()!.browser }}</p>
+                      <p class="text-gray-400 text-xs">Browser</p>
+                      <p class="text-gray-900 text-sm">{{ bug()!.browser }}</p>
                     </div>
                   }
                   @if (bug()!.operating_system) {
                     <div>
-                      <p class="text-slate-500 text-xs mt-2">Operating System</p>
-                      <p class="text-white text-sm">{{ bug()!.operating_system }}</p>
+                      <p class="text-gray-400 text-xs mt-2">Operating System</p>
+                      <p class="text-gray-900 text-sm">{{ bug()!.operating_system }}</p>
                     </div>
                   }
                   @if (bug()!.current_url) {
                     <div>
-                      <p class="text-slate-500 text-xs mt-2">URL</p>
-                      <p class="text-white text-sm break-all">{{ bug()!.current_url }}</p>
+                      <p class="text-gray-400 text-xs mt-2">URL</p>
+                      <p class="text-gray-900 text-sm break-all">{{ bug()!.current_url }}</p>
                     </div>
                   }
                 </div>
               </div>
 
               <!-- Info del reporter -->
-              <div class="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                <h2 class="text-slate-400 text-xs uppercase tracking-wider mb-3">
+              <div class="bg-white rounded-xl p-5 border border-gray-200">
+                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
                   Reporter
                 </h2>
-                <p class="text-white text-sm">
+                <p class="text-gray-900 text-sm">
                   {{ bug()!.reporter_name || 'Anonymous' }}
                 </p>
                 @if (bug()!.reporter_email) {
-                  <p class="text-slate-400 text-xs mt-1">
+                  <p class="text-gray-500 text-xs mt-1">
                     {{ bug()!.reporter_email }}
                   </p>
                 }
                 @if (bug()!.source_app) {
-                  <p class="text-slate-500 text-xs mt-2">
+                  <p class="text-gray-400 text-xs mt-2">
                     via {{ bug()!.source_app }}
                   </p>
                 }
@@ -165,17 +165,17 @@ import { Bug } from '../../core/models/bug';
 
               <!-- Duplicate warning -->
               @if(bug()!.is_duplicate) {
-                <div class="bg-yellow-500/10 rounded-xl p-5 border border-yellow-500/20">
-                  <h2 class="text-yellow-400 text-xs uppercase tracking-wider mb-2">
+                <div class="bg-yellow-50 rounded-xl p-5 border border-yellow-200">
+                  <h2 class="text-yellow-600 text-xs uppercase tracking-wider mb-2">
                     Possible duplicate
                   </h2>
-                  <p class="text-slate-300 text-sm">
+                  <p class="text-gray-700 text-sm">
                     This bug may already be reported.
                   </p>
                   <button
                     *ngIf="bug()!.duplicate_of_id"
                     (click)="router.navigate(['/bugs', bug()!.duplicate_of_id])"
-                    class="mt-2 text-yellow-400 text-xs hover:underline"
+                    class="mt-2 text-yellow-600 text-xs hover:underline"
                   >
                     View original →
                   </button>
@@ -220,10 +220,10 @@ export class BugDetail implements OnInit {
   severityClass(severity?: string) {
     const s = severity?.toLowerCase();
     return {
-      'bg-red-500/20 text-red-400': s === 'critical',
-      'bg-orange-500/20 text-orange-400': s === 'high',
-      'bg-yellow-500/20 text-yellow-400': s === 'medium',
-      'bg-green-500/20 text-green-400': s === 'low',
+      'bg-red-100 text-red-600': s === 'critical',
+      'bg-orange-100 text-orange-600': s === 'high',
+      'bg-yellow-100 text-yellow-600': s === 'medium',
+      'bg-green-100 text-green-600': s === 'low',
     };
   }
 }

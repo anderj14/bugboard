@@ -9,13 +9,13 @@ import { CommonModule } from '@angular/common';
   selector: 'app-dashboard',
   imports: [BugWidget, CommonModule],
   template: `
-    <div class="min-h-screen bg-slate-900 p-6">
-      
+    <div class="min-h-screen bg-gray-50 p-6">
+
       <!-- Header -->
       <div class="flex justify-between items-center mb-8">
         <div>
-          <h1 class="text-white text-3xl font-bold">🐛 BugBoard</h1>
-          <p class="text-slate-400 text-sm mt-1">AI-powered bug tracking</p>
+          <h1 class="text-gray-900 text-3xl font-bold">🐛 BugBoard</h1>
+          <p class="text-gray-500 text-sm mt-1">AI-powered bug tracking</p>
         </div>
         <button
           (click)="router.navigate(['/report'])"
@@ -27,21 +27,21 @@ import { CommonModule } from '@angular/common';
 
       <!-- Stats -->
       <div class="grid grid-cols-4 gap-4 mb-8">
-        <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
-          <p class="text-slate-400 text-xs mb-1">Total Bugs</p>
-          <p class="text-white text-2xl font-bold">{{ bugs().length }}</p>
+        <div class="bg-white rounded-xl p-4 border border-gray-200">
+          <p class="text-gray-500 text-xs mb-1">Total Bugs</p>
+          <p class="text-gray-900 text-2xl font-bold">{{ bugs().length }}</p>
         </div>
-        <div class="bg-red-500/10 rounded-xl p-4 border border-red-500/20">
-          <p class="text-red-400 text-xs mb-1">Critical</p>
-          <p class="text-red-400 text-2xl font-bold">{{ countBySeverity('Critical') }}</p>
+        <div class="bg-red-50 rounded-xl p-4 border border-red-200">
+          <p class="text-red-600 text-xs mb-1">Critical</p>
+          <p class="text-red-600 text-2xl font-bold">{{ countBySeverity('Critical') }}</p>
         </div>
-        <div class="bg-orange-500/10 rounded-xl p-4 border border-orange-500/20">
-          <p class="text-orange-400 text-xs mb-1">High</p>
-          <p class="text-orange-400 text-2xl font-bold">{{ countBySeverity('High') }}</p>
+        <div class="bg-orange-50 rounded-xl p-4 border border-orange-200">
+          <p class="text-orange-600 text-xs mb-1">High</p>
+          <p class="text-orange-600 text-2xl font-bold">{{ countBySeverity('High') }}</p>
         </div>
-        <div class="bg-green-500/10 rounded-xl p-4 border border-green-500/20">
-          <p class="text-green-400 text-xs mb-1">Resolved</p>
-          <p class="text-green-400 text-2xl font-bold">{{ countByStatus('Resolved') }}</p>
+        <div class="bg-green-50 rounded-xl p-4 border border-green-200">
+          <p class="text-green-600 text-xs mb-1">Resolved</p>
+          <p class="text-green-600 text-2xl font-bold">{{ countByStatus('Resolved') }}</p>
         </div>
       </div>
 
@@ -49,7 +49,7 @@ import { CommonModule } from '@angular/common';
       <div class="flex gap-3 mb-6 flex-wrap">
         <select
           (change)="filterSeverity($event)"
-          class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
         >
           <option value="">All severities</option>
           <option value="Critical">Critical</option>
@@ -60,7 +60,7 @@ import { CommonModule } from '@angular/common';
 
         <select
           (change)="filterStatus($event)"
-          class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
         >
           <option value="">All statuses</option>
           <option value="Open">Open</option>
@@ -71,7 +71,7 @@ import { CommonModule } from '@angular/common';
 
         <select
           (change)="filterModule($event)"
-          class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
         >
           <option value="">All modules</option>
           <option value="auth">Auth</option>
@@ -84,7 +84,7 @@ import { CommonModule } from '@angular/common';
 
         <button
           (click)="loadBugs()"
-          class="bg-slate-800 border border-slate-700 text-slate-300 rounded-lg px-3 py-2 text-sm hover:border-blue-500"
+          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm hover:border-blue-500"
         >
           ↻ Refresh
         </button>
@@ -92,19 +92,19 @@ import { CommonModule } from '@angular/common';
 
       <div class="space-y-3">
         @if (loading()) {
-          <div class="text-slate-400 text-center py-12">
+          <div class="text-gray-500 text-center py-12">
             Loading bugs...
           </div>
         }
         @if (!loading() && bugs().length === 0) {
-          <div class="text-slate-400 text-center py-12">
+          <div class="text-gray-500 text-center py-12">
             No bugs found.
           </div>
         }
         @for (bug of bugs(); track $index) {
           <div
             (click)="router.navigate(['/bugs', bug.id])"
-            class="bg-slate-800 border border-slate-700 hover:border-slate-500 rounded-xl p-4 cursor-pointer transition-all"
+            class="bg-white border border-gray-200 hover:border-gray-400 rounded-xl p-4 cursor-pointer transition-all"
           >
             <div class="flex justify-between items-start gap-4">
               <div class="flex-1 min-w-0">
@@ -113,25 +113,25 @@ import { CommonModule } from '@angular/common';
                     [ngClass]="severityClass(bug.severity)">
                     {{ bug.severity }}
                   </span>
-                  <span class="px-2 py-0.5 rounded-full text-xs bg-slate-700 text-slate-300">
+                  <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600">
                     {{ bug.module }}
                   </span>
                   @if (bug.is_duplicate) {
                     <span
-                      class="px-2 py-0.5 rounded-full text-xs bg-yellow-500/20 text-yellow-400">
+                      class="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-600">
                       duplicate
                     </span>
                   }
                 </div>
-                <p class="text-white font-medium truncate">{{ bug.title || bug.raw_description }}</p>
-                <p class="text-slate-400 text-xs mt-1">{{ bug.ai_summary }}</p>
+                <p class="text-gray-900 font-medium truncate">{{ bug.title || bug.raw_description }}</p>
+                <p class="text-gray-500 text-xs mt-1">{{ bug.ai_summary }}</p>
               </div>
               <div class="text-right shrink-0">
                 <span class="px-2 py-0.5 rounded-full text-xs"
                   [ngClass]="statusClass(bug.status)">
                   {{ bug.status }}
                 </span>
-                <p class="text-slate-500 text-xs mt-1">
+                <p class="text-gray-400 text-xs mt-1">
                   {{ bug.created_at | date:'MMM d, h:mm a' }}
                 </p>
               </div>
@@ -139,7 +139,7 @@ import { CommonModule } from '@angular/common';
 
             <!-- Contexto del browser -->
              @if (bug.browser) {
-              <div class="mt-2 flex gap-3 text-slate-500 text-xs">
+              <div class="mt-2 flex gap-3 text-gray-400 text-xs">
                 <span>{{ bug.browser }}</span>
                 @if (bug.operating_system) {
                   <span>{{ bug.operating_system }}</span>
@@ -208,20 +208,20 @@ export class Dashboard implements OnInit {
   severityClass(severity?: string) {
     const s = severity?.toLowerCase();
     return {
-      'bg-red-500/20 text-red-400': s === 'critical',
-      'bg-orange-500/20 text-orange-400': s === 'high',
-      'bg-yellow-500/20 text-yellow-400': s === 'medium',
-      'bg-green-500/20 text-green-400': s === 'low',
+      'bg-red-100 text-red-600': s === 'critical',
+      'bg-orange-100 text-orange-600': s === 'high',
+      'bg-yellow-100 text-yellow-600': s === 'medium',
+      'bg-green-100 text-green-600': s === 'low',
     };
   }
 
   statusClass(status?: string) {
     const s = status?.toLowerCase();
     return {
-      'bg-blue-500/20 text-blue-400': s === 'open',
-      'bg-purple-500/20 text-purple-400': s === 'in_progress',
-      'bg-green-500/20 text-green-400': s === 'resolved',
-      'bg-slate-500/20 text-slate-400': s === 'closed',
+      'bg-blue-100 text-blue-600': s === 'open',
+      'bg-purple-100 text-purple-600': s === 'in_progress',
+      'bg-green-100 text-green-600': s === 'resolved',
+      'bg-gray-100 text-gray-500': s === 'closed',
     };
   }
 }
