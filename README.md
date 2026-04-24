@@ -156,7 +156,7 @@ auth, payments, dashboard, profile, notifications, api, ui, database, other
 **Anderson Frias** — [@anndev](https://youtube.com/@anndev)
 
 - YouTube: [youtube.com/@anndev](https://youtube.com/@anndev)
-- GitHub: [github.com/yourusername](https://github.com/yourusername)
+- GitHub: [github.com/yourusername](https://github.com/anderj14)
 
 ---
 
