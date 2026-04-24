@@ -23,6 +23,12 @@ import { CommonModule } from '@angular/common';
         >
           + Report Bug
         </button>
+        <button
+          (click)="router.navigate(['/metrics'])"
+          class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+        >
+          📊 Metrics
+        </button>
       </div>
 
       <!-- Stats -->
