@@ -13,7 +13,7 @@ export class BugService {
   private apiUrl = 'http://127.0.0.1:8000/api';
 
   createBug(dto: CreateBugDto): Observable<Bug> {
-    return this.http.post<Bug>(this.apiUrl + '/', dto);
+    return this.http.post<Bug>(this.apiUrl + '/bugs', dto);
   }
 
   getBugs(filters?: {
@@ -31,11 +31,11 @@ export class BugService {
   }
 
   getBugById(id: string): Observable<Bug> {
-    return this.http.get<Bug>(`${this.apiUrl}/${id}`);
+    return this.http.get<Bug>(`${this.apiUrl}/bugs/${id}`);
   }
 
   updateBug(id: string, status: string): Observable<Bug> {
-    return this.http.patch<Bug>(`${this.apiUrl}/${id}/bugs/status`, { status });
+    return this.http.patch<Bug>(`${this.apiUrl}/bugs/${id}/status`, { status });
   }
 
   classifyPreview(description: string): Observable<Bug> {
@@ -43,7 +43,7 @@ export class BugService {
   }
 
   updateStatus(id: string, status: string): Observable<Bug> {
-    return this.http.patch<Bug>(`${this.apiUrl}/${id}/bugs/status`, { status });
+    return this.http.patch<Bug>(`${this.apiUrl}/bugs/${id}/status`, { status });
   }
 
   getMetricsSummary(): Observable<any> {

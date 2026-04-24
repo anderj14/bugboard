@@ -116,7 +116,6 @@ import { BugService } from '../../../core/services/bug-service';
 
     </div>
   `,
-  styleUrl: './bug-widget.scss',
 })
 export class BugWidget implements OnDestroy {
   private bugService = inject(BugService);

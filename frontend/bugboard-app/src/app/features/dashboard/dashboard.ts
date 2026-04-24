@@ -161,7 +161,6 @@ import { CommonModule } from '@angular/common';
     <!-- Widget flotante -->
     <app-bug-widget />
   `,
-  styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
   router = inject(Router);
