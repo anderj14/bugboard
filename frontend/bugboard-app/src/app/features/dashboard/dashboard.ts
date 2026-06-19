@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { BugWidget } from "../widget/bug-widget/bug-widget";
 import { Router } from '@angular/router';
 import { BugService } from '../../core/services/bug-service';
@@ -70,7 +70,7 @@ import { CommonModule } from '@angular/common';
         >
           <option value="">All statuses</option>
           <option value="Open">Open</option>
-          <option value="In_progress">In Progress</option>
+          <option value="In Progress">In Progress</option>
           <option value="Resolved">Resolved</option>
           <option value="Closed">Closed</option>
         </select>
@@ -162,18 +162,25 @@ import { CommonModule } from '@angular/common';
     <app-bug-widget />
   `,
 })
-export class Dashboard implements OnInit {
+export class Dashboard implements OnInit, OnDestroy {
   router = inject(Router);
   private bugService = inject(BugService);
 
   bugs = signal<Bug[]>([]);
   loading = signal(false);
+  private intervalId: ReturnType<typeof setInterval> | null = null;
 
   filters: { severity?: string; status?: string; module?: string } = {};
 
   ngOnInit() {
     this.loadBugs();
-    setInterval(() => this.loadBugs(), 5000);
+    this.intervalId = setInterval(() => this.loadBugs(), 5000);
+  }
+
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   loadBugs() {
@@ -224,7 +231,7 @@ export class Dashboard implements OnInit {
     const s = status?.toLowerCase();
     return {
       'bg-blue-100 text-blue-600': s === 'open',
-      'bg-purple-100 text-purple-600': s === 'in_progress',
+      'bg-purple-100 text-purple-600': s === 'in progress',
       'bg-green-100 text-green-600': s === 'resolved',
       'bg-gray-100 text-gray-500': s === 'closed',
     };

@@ -12,7 +12,7 @@ router = APIRouter()
 def get_summary(db: Session = Depends(get_db)):
     total = db.query(Bug).count()
     open_bugs = db.query(Bug).filter(Bug.status == BugStatus.OPEN).count()
-    resolved = db.query(Bug).filter(Bug.status == BugStatus.OPEN).count()
+    resolved = db.query(Bug).filter(Bug.status == BugStatus.RESOLVED).count()
     critical = db.query(Bug).filter(Bug.severity == SeverityLevel.CRITICAL).count()
     
     return {
@@ -52,7 +52,7 @@ def by_status(db: Session = Depends(get_db)):
             .all()
     )
     
-    return [{"status": r[0].value if [0] else "unknown", "count": r[1]} for r in results]
+    return [{"status": r[0].value if r[0] else "unknown", "count": r[1]} for r in results]
 
 "Bugs per day — last 30 days"
 @router.get("/timeline")

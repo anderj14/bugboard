@@ -1,1 +1,1 @@
-export type BugStatus = 'Open' | 'In_progress' | 'Resolved' | 'Closed';
+export type BugStatus = 'Open' | 'In Progress' | 'Resolved' | 'Closed';
