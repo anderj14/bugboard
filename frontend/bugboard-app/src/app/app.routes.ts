@@ -34,4 +34,11 @@ export const routes: Routes = [
                 (m) => m.Metrics
             ),
     },
+    {
+        path: '**',
+        loadComponent: () =>
+            import('./features/dashboard/dashboard').then(
+                (m) => m.Dashboard
+            ),
+    },
 ];

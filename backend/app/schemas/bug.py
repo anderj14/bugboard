@@ -18,6 +18,10 @@ class CreateBugRequest(BaseModel):
     source_app: Optional[str] = None
     context: Optional[BugContext] = None
 
+class UpdateStatusRequest(BaseModel):
+    status: str
+
+
 # This is the schema for the response when a bug report is created
 class BugResponse(BaseModel):
     id: UUID
@@ -35,6 +39,11 @@ class BugResponse(BaseModel):
     browser: Optional[str] = None
     operating_system: Optional[str] = None
     current_url: Optional[str] = None
+    screen_resolution: Optional[str] = None
+    reporter_name: Optional[str] = None
+    reporter_email: Optional[str] = None
+    source_app: Optional[str] = None
+    is_ai_classified: bool = False
     created_at: datetime
 
     class Config:

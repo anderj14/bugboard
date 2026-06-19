@@ -4,7 +4,7 @@ from uuid import UUID
 from typing import List
 from app.database.connection import get_db
 from app.models.bug import Bug, BugStatus
-from app.schemas.bug import CreateBugRequest, BugResponse
+from app.schemas.bug import CreateBugRequest, BugResponse, UpdateStatusRequest
 from app.services.ollama import classify_bug
 
 router = APIRouter()
@@ -105,12 +105,12 @@ def get_bug(bug_id: UUID, db: Session = Depends(get_db)):
 
 # This endpoint updates the status of a bug report
 @router.patch("/{bug_id}/status", response_model=BugResponse)
-def update_status(bug_id: UUID, payload: dict, db: Session = Depends(get_db)):
+def update_status(bug_id: UUID, payload: UpdateStatusRequest, db: Session = Depends(get_db)):
     bug = db.query(Bug).filter(Bug.id == bug_id).first()
     if not bug:
         raise HTTPException(status_code=404, detail="Bug not found")
     
-    bug.status = payload.get("status", bug.status)
+    bug.status = payload.status
 
     db.commit()
     db.refresh(bug)
