@@ -9,157 +9,146 @@ import { CommonModule } from '@angular/common';
   selector: 'app-dashboard',
   imports: [BugWidget, CommonModule],
   template: `
-    <div class="min-h-screen bg-gray-50 p-6">
+    <div class="flex flex-col gap-6">
 
       <!-- Header -->
-      <div class="flex justify-between items-center mb-8">
-        <div>
-          <h1 class="text-gray-900 text-3xl font-bold">🐛 BugBoard</h1>
-          <p class="text-gray-500 text-sm mt-1">AI-powered bug tracking</p>
+      <div class="flex justify-between items-center">
+        <h1 class="text-[var(--foreground)] font-bold" style="font-size:28px;line-height:1.2">Dashboard</h1>
+        <div class="flex gap-3">
+          <button class="btn btn-primary" (click)="router.navigate(['/report'])">
+            + Report Bug
+          </button>
+          <button class="btn btn-secondary" (click)="router.navigate(['/metrics'])">
+            📊 Metrics
+          </button>
         </div>
-        <button
-          (click)="router.navigate(['/report'])"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
-        >
-          + Report Bug
-        </button>
-        <button
-          (click)="router.navigate(['/metrics'])"
-          class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
-        >
-          📊 Metrics
-        </button>
       </div>
 
       <!-- Stats -->
-      <div class="grid grid-cols-4 gap-4 mb-8">
-        <div class="bg-white rounded-xl p-4 border border-gray-200">
-          <p class="text-gray-500 text-xs mb-1">Total Bugs</p>
-          <p class="text-gray-900 text-2xl font-bold">{{ bugs().length }}</p>
+      <div class="grid grid-cols-4 gap-4">
+        <div class="card overflow-hidden">
+          <div class="flex flex-col gap-2" style="padding:20px">
+            <p class="text-[var(--muted-foreground)] font-medium" style="font-size:13px;line-height:1.4">Total Bugs</p>
+            <p class="text-[var(--foreground)] font-bold" style="font-size:34px;line-height:1.1">{{ bugs().length }}</p>
+          </div>
         </div>
-        <div class="bg-red-50 rounded-xl p-4 border border-red-200">
-          <p class="text-red-600 text-xs mb-1">Critical</p>
-          <p class="text-red-600 text-2xl font-bold">{{ countBySeverity('Critical') }}</p>
+        <div class="card overflow-hidden" style="border-color:var(--color-error-foreground)">
+          <div class="flex flex-col gap-2" style="padding:20px;background:var(--color-error)">
+            <p class="text-[var(--color-error-foreground)] font-medium" style="font-size:13px;line-height:1.4">Critical</p>
+            <p class="text-[var(--color-error-foreground)] font-bold" style="font-size:34px;line-height:1.1">{{ countBySeverity('Critical') }}</p>
+          </div>
         </div>
-        <div class="bg-orange-50 rounded-xl p-4 border border-orange-200">
-          <p class="text-orange-600 text-xs mb-1">High</p>
-          <p class="text-orange-600 text-2xl font-bold">{{ countBySeverity('High') }}</p>
+        <div class="card overflow-hidden" style="border-color:var(--color-warning-foreground)">
+          <div class="flex flex-col gap-2" style="padding:20px;background:var(--color-warning)">
+            <p class="text-[var(--color-warning-foreground)] font-medium" style="font-size:13px;line-height:1.4">High</p>
+            <p class="text-[var(--color-warning-foreground)] font-bold" style="font-size:34px;line-height:1.1">{{ countBySeverity('High') }}</p>
+          </div>
         </div>
-        <div class="bg-green-50 rounded-xl p-4 border border-green-200">
-          <p class="text-green-600 text-xs mb-1">Resolved</p>
-          <p class="text-green-600 text-2xl font-bold">{{ countByStatus('Resolved') }}</p>
+        <div class="card overflow-hidden" style="border-color:var(--color-success-foreground)">
+          <div class="flex flex-col gap-2" style="padding:20px;background:var(--color-success)">
+            <p class="text-[var(--color-success-foreground)] font-medium" style="font-size:13px;line-height:1.4">Resolved</p>
+            <p class="text-[var(--color-success-foreground)] font-bold" style="font-size:34px;line-height:1.1">{{ countByStatus('Resolved') }}</p>
+          </div>
         </div>
       </div>
 
       <!-- Filters -->
-      <div class="flex gap-3 mb-6 flex-wrap">
-        <select
-          (change)="filterSeverity($event)"
-          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-        >
-          <option value="">All severities</option>
-          <option value="Critical">Critical</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
+      <div class="flex gap-3 items-center">
+        <div class="filter-pill" style="width:180px">
+          <span class="filter-pill-text" id="sevText">All severities</span>
+          <span class="filter-pill-chevron">▾</span>
+          <select class="filter-pill-select" (change)="filterSeverity($event); updateFilterText('sevText', $event)">
+            <option value="">All severities</option>
+            <option value="Critical">Critical</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
 
-        <select
-          (change)="filterStatus($event)"
-          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-        >
-          <option value="">All statuses</option>
-          <option value="Open">Open</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Resolved">Resolved</option>
-          <option value="Closed">Closed</option>
-        </select>
+        <div class="filter-pill" style="width:160px">
+          <span class="filter-pill-text" id="statText">All statuses</span>
+          <span class="filter-pill-chevron">▾</span>
+          <select class="filter-pill-select" (change)="filterStatus($event); updateFilterText('statText', $event)">
+            <option value="">All statuses</option>
+            <option value="Open">Open</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
 
-        <select
-          (change)="filterModule($event)"
-          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-        >
-          <option value="">All modules</option>
-          <option value="auth">Auth</option>
-          <option value="payments">Payments</option>
-          <option value="dashboard">Dashboard</option>
-          <option value="ui">UI</option>
-          <option value="api">API</option>
-          <option value="other">Other</option>
-        </select>
+        <div class="filter-pill" style="width:160px">
+          <span class="filter-pill-text" id="modText">All modules</span>
+          <span class="filter-pill-chevron">▾</span>
+          <select class="filter-pill-select" (change)="filterModule($event); updateFilterText('modText', $event)">
+            <option value="">All modules</option>
+            <option value="auth">Auth</option>
+            <option value="payments">Payments</option>
+            <option value="dashboard">Dashboard</option>
+            <option value="ui">UI</option>
+            <option value="api">API</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
 
-        <button
-          (click)="loadBugs()"
-          class="bg-white border border-gray-200 text-gray-700 rounded-lg px-3 py-2 text-sm hover:border-blue-500"
-        >
+        <button class="btn btn-ghost" (click)="loadBugs()">
           ↻ Refresh
         </button>
       </div>
 
-      <div class="space-y-3">
+      <!-- Bug List -->
+      <div class="flex flex-col gap-2">
         @if (loading()) {
-          <div class="text-gray-500 text-center py-12">
-            Loading bugs...
-          </div>
+          <div class="text-center py-12 text-[var(--muted-foreground)]">Loading bugs...</div>
         }
         @if (!loading() && bugs().length === 0) {
-          <div class="text-gray-500 text-center py-12">
-            No bugs found.
-          </div>
+          <div class="text-center py-12 text-[var(--muted-foreground)]">No bugs found.</div>
         }
         @for (bug of bugs(); track $index) {
           <div
             (click)="router.navigate(['/bugs', bug.id])"
-            class="bg-white border border-gray-200 hover:border-gray-400 rounded-xl p-4 cursor-pointer transition-all"
+            class="card cursor-pointer transition-all hover:border-gray-400 flex gap-4"
+            style="padding:16px;border-radius:12px"
           >
-            <div class="flex justify-between items-start gap-4">
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-full text-xs font-medium"
-                    [ngClass]="severityClass(bug.severity)">
-                    {{ bug.severity }}
-                  </span>
-                  <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600">
-                    {{ bug.module }}
-                  </span>
-                  @if (bug.is_duplicate) {
-                    <span
-                      class="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-600">
-                      duplicate
-                    </span>
-                  }
-                </div>
-                <p class="text-gray-900 font-medium truncate">{{ bug.title || bug.raw_description }}</p>
-                <p class="text-gray-500 text-xs mt-1">{{ bug.ai_summary }}</p>
-              </div>
-              <div class="text-right shrink-0">
-                <span class="px-2 py-0.5 rounded-full text-xs"
-                  [ngClass]="statusClass(bug.status)">
-                  {{ bug.status }}
+            <div class="flex-1 min-w-0 flex flex-col gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="badge" [ngClass]="severityClass(bug.severity)">
+                  {{ bug.severity }}
                 </span>
-                <p class="text-gray-400 text-xs mt-1">
-                  {{ bug.created_at | date:'MMM d, h:mm a' }}
-                </p>
-              </div>
-            </div>
-
-            <!-- Contexto del browser -->
-             @if (bug.browser) {
-              <div class="mt-2 flex gap-3 text-gray-400 text-xs">
-                <span>{{ bug.browser }}</span>
-                @if (bug.operating_system) {
-                  <span>{{ bug.operating_system }}</span>
+                <span class="badge badge-module">
+                  {{ bug.module }}
+                </span>
+                @if (bug.is_duplicate) {
+                  <span class="badge" style="background:#FEF9C3;color:#A16207">duplicate</span>
                 }
               </div>
-             }
-
+              <p class="text-[var(--foreground)] font-semibold truncate" style="font-size:15px;line-height:1.4">
+                {{ bug.title || bug.raw_description }}
+              </p>
+              <p class="text-[var(--muted-foreground)]" style="font-size:13px;line-height:1.4">
+                {{ bug.ai_summary }}
+              </p>
+            </div>
+            <div class="text-right shrink-0 flex flex-col gap-2 items-end justify-between">
+              <span class="badge" [ngClass]="statusClass(bug.status)">
+                {{ bug.status }}
+              </span>
+              <span style="color:#9CA3AF;font-size:12px;line-height:1.4">
+                {{ bug.created_at | date:'MMM d, h:mm a' }}
+              </span>
+              @if (bug.browser) {
+                <span style="color:#9CA3AF;font-size:11px;line-height:1.4">
+                  {{ bug.browser }}
+                </span>
+              }
+            </div>
           </div>
         }
       </div>
-    </div>
 
-    <!-- Widget flotante -->
-    <app-bug-widget />
+      <app-bug-widget />
+    </div>
   `,
 })
 export class Dashboard implements OnInit, OnDestroy {
@@ -194,6 +183,14 @@ export class Dashboard implements OnInit, OnDestroy {
     });
   }
 
+  updateFilterText(id: string, e: Event) {
+    const el = document.getElementById(id);
+    if (el) {
+      const val = (e.target as HTMLSelectElement).value;
+      el.textContent = val || (id === 'sevText' ? 'All severities' : id === 'statText' ? 'All statuses' : 'All modules');
+    }
+  }
+
   filterSeverity(e: Event) {
     this.filters.severity = (e.target as HTMLSelectElement).value || undefined;
     this.loadBugs();
@@ -220,20 +217,20 @@ export class Dashboard implements OnInit, OnDestroy {
   severityClass(severity?: string) {
     const s = severity?.toLowerCase();
     return {
-      'bg-red-100 text-red-600': s === 'critical',
-      'bg-orange-100 text-orange-600': s === 'high',
-      'bg-yellow-100 text-yellow-600': s === 'medium',
-      'bg-green-100 text-green-600': s === 'low',
+      'badge-critical': s === 'critical',
+      'badge-high': s === 'high',
+      'badge-medium': s === 'medium',
+      'badge-low': s === 'low',
     };
   }
 
   statusClass(status?: string) {
     const s = status?.toLowerCase();
     return {
-      'bg-blue-100 text-blue-600': s === 'open',
-      'bg-purple-100 text-purple-600': s === 'in progress',
-      'bg-green-100 text-green-600': s === 'resolved',
-      'bg-gray-100 text-gray-500': s === 'closed',
+      'badge-open': s === 'open',
+      'badge-in-progress': s === 'in progress',
+      'badge-resolved': s === 'resolved',
+      'badge-closed': s === 'closed',
     };
   }
 }

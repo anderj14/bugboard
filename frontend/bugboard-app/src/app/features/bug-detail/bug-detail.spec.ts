@@ -63,13 +63,10 @@ describe('BugDetail', () => {
     expect(component.bug()?.title).toBe('Test Bug');
   });
 
-  it('should update bug status', () => {
-    const event = new Event('change');
-    Object.defineProperty(event, 'target', { value: { value: 'Resolved' } });
+  it('should cycle bug status', () => {
+    component.cycleStatus();
 
-    component.updateStatus(event);
-
-    expect(bugServiceMock.updateStatus).toHaveBeenCalledWith('abc-123', 'Resolved');
+    expect(bugServiceMock.updateStatus).toHaveBeenCalledWith('abc-123', 'In Progress');
     expect(component.bug()?.status).toBe('Resolved');
   });
 

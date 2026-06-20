@@ -8,185 +8,107 @@ import { Bug } from '../../core/models/bug';
   selector: 'app-bug-detail',
   imports: [CommonModule],
   template: `
-    <div class="min-h-screen bg-gray-50 p-6">
-
-      <!-- Back -->
-      <button
-        (click)="router.navigate(['/dashboard'])"
-        class="text-gray-500 hover:text-gray-900 text-sm mb-6 flex items-center gap-2"
-      >
+    <div class="flex flex-col gap-6">
+      <button (click)="router.navigate(['/dashboard'])"
+        class="text-[var(--primary)] text-sm font-medium self-start cursor-pointer bg-transparent border-none"
+        style="line-height:1.4">
         ← Back to dashboard
       </button>
+
       @if (loading()) {
-        <div class="text-gray-500 text-center py-12">
-          Loading...
-        </div>
+        <div class="text-center py-12 text-[var(--muted-foreground)]">Loading...</div>
       }
+
       @if (bug()) {
-        <div>
+        <div class="card flex flex-col gap-6" style="padding:32px">
 
           <!-- Header -->
-          <div class="flex justify-between items-start mb-6 gap-4">
-            <div>
-              <div class="flex items-center gap-2 mb-2 flex-wrap">
-                <span class="px-3 py-1 rounded-full text-sm font-medium"
-                  [ngClass]="severityClass(bug()!.severity)">
-                  {{ bug()!.severity }}
-                </span>
-                <span class="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-600">
-                  {{ bug()!.module }}
-                </span>
-                @if (bug()!.is_duplicate){
-                  <span class="px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-600">
-                    possible duplicate
-                  </span>
-                }
-              </div>
-              <h1 class="text-gray-900 text-2xl font-bold">{{ bug()!.title }}</h1>
-              <p class="text-gray-500 text-sm mt-1">
+          <div class="flex justify-between items-center gap-4">
+            <h1 class="text-[var(--foreground)] font-bold" style="font-size:22px;line-height:1.2">{{ bug()!.title }}</h1>
+            <span class="badge" [ngClass]="statusClass(bug()!.status)" style="padding:6px 14px"
+              (click)="cycleStatus()" role="button"
+            >{{ bug()!.status }}</span>
+          </div>
+
+          <!-- Tags -->
+          <div class="flex gap-2">
+            <span class="badge" [ngClass]="severityClass(bug()!.severity)">{{ bug()!.severity }}</span>
+            <span class="badge badge-module">{{ bug()!.module }}</span>
+            @if (bug()!.is_duplicate) {
+              <span class="badge" style="background:#FEF9C3;color:#A16207">possible duplicate</span>
+            }
+          </div>
+
+          <!-- Description -->
+          <div class="flex flex-col gap-2">
+            <h2 class="text-[var(--foreground)] font-semibold" style="font-size:16px;line-height:1.3">Description</h2>
+            <p class="text-[var(--muted-foreground)]" style="font-size:14px;line-height:1.6;width:100%">{{ bug()!.raw_description }}</p>
+          </div>
+
+          <!-- Reproduction Steps -->
+          <div class="flex flex-col gap-2">
+            <h2 class="text-[var(--foreground)] font-semibold" style="font-size:16px;line-height:1.3">Reproduction Steps</h2>
+            <p class="text-[var(--muted-foreground)] whitespace-pre-line" style="font-size:14px;line-height:1.6;width:100%">{{ bug()!.reproduction_steps }}</p>
+          </div>
+
+          <!-- Suggested Fix -->
+          <div class="flex flex-col gap-2">
+            <h2 class="text-[var(--foreground)] font-semibold" style="font-size:16px;line-height:1.3">Suggested Fix</h2>
+            <p class="text-[var(--muted-foreground)]" style="font-size:14px;line-height:1.6;width:100%">{{ bug()!.suggested_fix }}</p>
+          </div>
+
+          <!-- Meta row: Browser Context | Module/Reporter | Duplicate -->
+          <div class="flex gap-6 p-4 rounded-xl" style="background:#F9FAFB; padding:22px">
+
+            <!-- Browser Context -->
+            <div class="flex-1 flex flex-col gap-1">
+              <p class="text-[var(--muted-foreground)] text-xs font-medium uppercase tracking-wider mb-1">Browser Context</p>
+              @if (bug()!.browser) {
+                <p class="text-xs text-gray-400">Browser</p>
+                <p class="text-sm text-[var(--foreground)]">{{ bug()!.browser }}</p>
+              }
+              @if (bug()!.operating_system) {
+                <p class="text-xs text-gray-400">OS</p>
+                <p class="text-sm text-[var(--foreground)]">{{ bug()!.operating_system }}</p>
+              }
+              @if (bug()!.current_url) {
+                <p class="text-xs text-gray-400">URL</p>
+                <p class="text-sm text-[var(--foreground)] break-all">{{ bug()!.current_url }}</p>
+              }
+            </div>
+
+            <!-- Reporter -->
+            <div class="flex-1 flex flex-col gap-1">
+              <p class="text-[var(--muted-foreground)] text-xs font-medium uppercase tracking-wider mb-1">Reporter</p>
+              <p class="text-sm text-[var(--foreground)]">{{ bug()!.reporter_name || 'Anonymous' }}</p>
+              @if (bug()!.reporter_email) {
+                <p class="text-xs text-[var(--muted-foreground)]">{{ bug()!.reporter_email }}</p>
+              }
+              @if (bug()!.source_app) {
+                <p class="text-xs text-gray-400">via {{ bug()!.source_app }}</p>
+              }
+              <p class="text-xs text-gray-400" style="margin-top:4px">
                 Reported {{ bug()!.created_at | date:'MMM d, y h:mm a' }}
-                @if (bug()!.reporter_name){
-                  <span> by {{ bug()!.reporter_name }}</span>
-                }
               </p>
             </div>
 
-            <!-- Cambiar estado -->
-            <select
-              [value]="bug()!.status"
-              (change)="updateStatus($event)"
-              class="bg-white border border-gray-300 text-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
-            >
-              <option value="Open">Open</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Resolved">Resolved</option>
-              <option value="Closed">Closed</option>
-            </select>
-          </div>
-
-          <div class="grid grid-cols-3 gap-6">
-
-            <!-- Columna izquierda — 2/3 -->
-            <div class="col-span-2 space-y-6">
-
-              <!-- Descripción original -->
-              <div class="bg-white rounded-xl p-5 border border-gray-200">
-                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
-                  User report
-                </h2>
-                <p class="text-gray-900">{{ bug()!.raw_description }}</p>
-              </div>
-
-              <!-- Resumen IA -->
-              <div class="bg-blue-50 rounded-xl p-5 border border-blue-200">
-                <h2 class="text-blue-600 text-xs uppercase tracking-wider mb-3">
-                  AI Summary
-                </h2>
-                <p class="text-gray-900">{{ bug()!.ai_summary }}</p>
-                <div class="mt-3 flex items-center gap-2">
-                  <span class="text-gray-500 text-xs">AI confidence</span>
-                  <div class="flex-1 bg-gray-200 rounded-full h-1.5">
-                    <div
-                      class="bg-blue-500 h-1.5 rounded-full"
-                      [style.width.%]="bug()!.ai_confidence"
-                    ></div>
-                  </div>
-                  <span class="text-blue-600 text-xs">{{ bug()!.ai_confidence }}%</span>
-                </div>
-              </div>
-
-              <!-- Pasos de reproducción -->
-              <div class="bg-white rounded-xl p-5 border border-gray-200">
-                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
-                  Reproduction steps
-                </h2>
-                <p class="text-gray-900 whitespace-pre-line">{{ bug()!.reproduction_steps }}</p>
-              </div>
-
-              <!-- Fix sugerido -->
-              <div class="bg-green-50 rounded-xl p-5 border border-green-200">
-                <h2 class="text-green-600 text-xs uppercase tracking-wider mb-3">
-                  Suggested fix
-                </h2>
-                <p class="text-gray-900">{{ bug()!.suggested_fix }}</p>
-              </div>
-
-            </div>
-
-            <!-- Columna derecha — 1/3 -->
-            <div class="space-y-4">
-
-              <!-- Contexto del browser -->
-              <div class="bg-white rounded-xl p-5 border border-gray-200">
-                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
-                  Browser context
-                </h2>
-                <div class="space-y-2">
-                  @if (bug()!.browser) {
-                    <div>
-                      <p class="text-gray-400 text-xs">Browser</p>
-                      <p class="text-gray-900 text-sm">{{ bug()!.browser }}</p>
-                    </div>
-                  }
-                  @if (bug()!.operating_system) {
-                    <div>
-                      <p class="text-gray-400 text-xs mt-2">Operating System</p>
-                      <p class="text-gray-900 text-sm">{{ bug()!.operating_system }}</p>
-                    </div>
-                  }
-                  @if (bug()!.current_url) {
-                    <div>
-                      <p class="text-gray-400 text-xs mt-2">URL</p>
-                      <p class="text-gray-900 text-sm break-all">{{ bug()!.current_url }}</p>
-                    </div>
-                  }
-                </div>
-              </div>
-
-              <!-- Info del reporter -->
-              <div class="bg-white rounded-xl p-5 border border-gray-200">
-                <h2 class="text-gray-500 text-xs uppercase tracking-wider mb-3">
-                  Reporter
-                </h2>
-                <p class="text-gray-900 text-sm">
-                  {{ bug()!.reporter_name || 'Anonymous' }}
-                </p>
-                @if (bug()!.reporter_email) {
-                  <p class="text-gray-500 text-xs mt-1">
-                    {{ bug()!.reporter_email }}
-                  </p>
-                }
-                @if (bug()!.source_app) {
-                  <p class="text-gray-400 text-xs mt-2">
-                    via {{ bug()!.source_app }}
-                  </p>
-                }
-              </div>
-
-              <!-- Duplicate warning -->
-              @if(bug()!.is_duplicate) {
-                <div class="bg-yellow-50 rounded-xl p-5 border border-yellow-200">
-                  <h2 class="text-yellow-600 text-xs uppercase tracking-wider mb-2">
-                    Possible duplicate
-                  </h2>
-                  <p class="text-gray-700 text-sm">
-                    This bug may already be reported.
-                  </p>
-                  <button
-                    *ngIf="bug()!.duplicate_of_id"
-                    (click)="router.navigate(['/bugs', bug()!.duplicate_of_id])"
-                    class="mt-2 text-yellow-600 text-xs hover:underline"
-                  >
+            <!-- Duplicate -->
+            @if (bug()!.is_duplicate) {
+              <div class="flex-1 flex flex-col gap-1 p-3 rounded-xl" style="background:#FEF9C3;border:1px solid #FDE68A">
+                <p class="text-xs font-medium uppercase tracking-wider" style="color:#A16207">Possible duplicate</p>
+                @if (bug()!.duplicate_of_id) {
+                  <button (click)="router.navigate(['/bugs', bug()!.duplicate_of_id])"
+                    class="text-sm font-medium self-start cursor-pointer bg-transparent border-none p-0"
+                    style="color:#A16207">
                     View original →
                   </button>
-                </div>
-              }
+                }
+              </div>
+            }
 
-            </div>
           </div>
         </div>
       }
-
     </div>
   `,
 })
@@ -197,6 +119,8 @@ export class BugDetail implements OnInit {
 
   bug = signal<Bug | null>(null);
   loading = signal(true);
+
+  private statusOrder = ['Open', 'In Progress', 'Resolved', 'Closed'];
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
@@ -209,10 +133,11 @@ export class BugDetail implements OnInit {
     });
   }
 
-  updateStatus(e: Event) {
-    const status = (e.target as HTMLSelectElement).value;
-    const id = this.bug()!.id;
-    this.bugService.updateStatus(id, status).subscribe({
+  cycleStatus() {
+    const current = this.bug()!.status;
+    const idx = this.statusOrder.indexOf(current);
+    const next = this.statusOrder[(idx + 1) % this.statusOrder.length];
+    this.bugService.updateStatus(this.bug()!.id, next).subscribe({
       next: (updated) => this.bug.set(updated),
     });
   }
@@ -220,10 +145,20 @@ export class BugDetail implements OnInit {
   severityClass(severity?: string) {
     const s = severity?.toLowerCase();
     return {
-      'bg-red-100 text-red-600': s === 'critical',
-      'bg-orange-100 text-orange-600': s === 'high',
-      'bg-yellow-100 text-yellow-600': s === 'medium',
-      'bg-green-100 text-green-600': s === 'low',
+      'badge-critical': s === 'critical',
+      'badge-high': s === 'high',
+      'badge-medium': s === 'medium',
+      'badge-low': s === 'low',
+    };
+  }
+
+  statusClass(status?: string) {
+    const s = status?.toLowerCase();
+    return {
+      'badge-open': s === 'open',
+      'badge-in-progress': s === 'in progress',
+      'badge-resolved': s === 'resolved',
+      'badge-closed': s === 'closed',
     };
   }
 }

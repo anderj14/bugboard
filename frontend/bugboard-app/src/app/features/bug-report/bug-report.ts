@@ -9,128 +9,109 @@ import { BugContext } from '../../core/models/bug-content';
   selector: 'app-bug-report',
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
-      <div class="w-full max-w-2xl">
+    <div class="flex flex-col gap-6 items-center">
 
-        <!-- Header -->
-        <div class="mb-8">
-          <button
-            (click)="router.navigate(['/dashboard'])"
-            class="text-gray-500 hover:text-gray-800 text-sm mb-4 flex items-center gap-2"
-          >
-            ← Back to dashboard
-          </button>
-          <h1 class="text-gray-900 text-3xl font-bold">🐛 Report a Bug</h1>
-          <p class="text-gray-500 text-sm mt-1">
-            Describe the bug in your own words — AI will classify it automatically
-          </p>
-        </div>
+      <!-- Header -->
+      <div class="flex flex-col gap-1">
+        <h1 class="text-[var(--foreground)] font-bold" style="font-size:24px;line-height:1.2">Report a Bug</h1>
+        <p class="text-[var(--muted-foreground)] text-sm" style="line-height:1.4">
+          Describe the bug in your own words — AI will classify it
+        </p>
+      </div>
 
-        <!-- Success -->
-        @if (submitted) {
-          <div class="bg-green-50 border border-green-200 rounded-xl p-8 text-center">
-            <div class="text-5xl mb-4">✅</div>
-            <h2 class="text-gray-900 text-xl font-bold mb-2">Bug reported successfully</h2>
-            <p class="text-gray-500 mb-2">AI classified it as:</p>
-            <div class="flex justify-center gap-2 mb-6">
-              <span class="px-3 py-1 rounded-full text-sm font-medium"
-                [ngClass]="severityClass(lastBug?.severity)">
-                {{ lastBug?.severity }}
-              </span>
-              <span class="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-600">
-                {{ lastBug?.module }}
-              </span>
-            </div>
-            <div class="flex gap-3 justify-center">
-              <button
-                (click)="router.navigate(['/bugs', lastBug?.id])"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
-              >
-                View bug detail
-              </button>
-              <button
-                (click)="submitted = false; form.reset()"
-                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm"
-              >
-                Report another
-              </button>
+      <!-- Success -->
+      @if (submitted) {
+        <div class="card p-8 text-center flex flex-col gap-6" style="width:640px;max-width:100%;background:var(--color-success);border-color:var(--color-success-foreground)">
+          <div class="text-5xl">✅</div>
+          <div class="flex flex-col gap-2">
+            <h2 class="text-[var(--foreground)] text-xl font-bold">Bug reported successfully</h2>
+            <p class="text-[var(--muted-foreground)]">AI classified it as:</p>
+            <div class="flex justify-center gap-2">
+              <span class="badge" [ngClass]="severityClass(lastBug?.severity)">{{ lastBug?.severity }}</span>
+              <span class="badge badge-module">{{ lastBug?.module }}</span>
             </div>
           </div>
-        }
+          <div class="flex gap-3 justify-center">
+            <button class="btn btn-primary" (click)="router.navigate(['/bugs', lastBug?.id])">
+              View bug detail
+            </button>
+            <button class="btn btn-secondary" (click)="submitted = false; form.reset()">
+              Report another
+            </button>
+          </div>
+        </div>
+      }
 
-
-        <!-- Form -->
-        <form *ngIf="!submitted" [formGroup]="form" (ngSubmit)="submit()"
-          class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm space-y-5">
+      <!-- Form -->
+      @if (!submitted) {
+        <form [formGroup]="form" (ngSubmit)="submit()" class="card flex flex-col gap-6" style="width:640px;max-width:100%;padding:32px">
 
           <!-- Description -->
-          <div>
-            <label class="text-gray-700 text-sm mb-2 block font-medium">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[var(--foreground)] text-sm font-medium" style="line-height:1.4">
               What went wrong? *
             </label>
             <textarea
               formControlName="description"
-              rows="5"
               placeholder="Describe the bug in your own words. The more detail the better..."
-              class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-900 text-sm resize-none focus:outline-none focus:border-blue-500 placeholder-gray-400"
+              class="w-full resize-none focus:outline-none"
+              style="height:140px;border-radius:12px;background:#F9FAFB;border:1px solid var(--card-border);color:var(--foreground);padding:12px 16px;font-size:14px;line-height:1.5;font-family:inherit"
             ></textarea>
 
-            <!-- AI preview en tiempo real -->
-             @if(preview) {
-              <div class="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                <p class="text-gray-500 text-xs mb-2">AI preview:</p>
-                <div class="flex gap-2 flex-wrap">
-                  <span class="px-2 py-0.5 rounded-full text-xs font-medium"
-                    [ngClass]="severityClass(preview?.severity)">
-                    {{ preview?.severity }}
-                  </span>
-                  <span class="px-2 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600">
-                    {{ preview?.module }}
-                  </span>
-                  <span class="text-gray-500 text-xs self-center">
-                    {{ preview?.ai_summary }}
-                  </span>
+            @if (preview) {
+              <div class="flex gap-3 items-center" style="border-radius:12px;background:#FFF7ED;border:1px solid #FED7AA;padding:12px 16px">
+                <span style="font-size:18px;line-height:1">🤖</span>
+                <div class="flex flex-col gap-1">
+                  <span style="color:#C2410C;font-size:13px;font-weight:500;line-height:1.3">AI Preview</span>
+                  <div class="flex gap-2 flex-wrap items-center">
+                    <span class="badge" [ngClass]="severityClass(preview?.severity)">{{ preview?.severity }}</span>
+                    <span class="badge badge-module">{{ preview?.module }}</span>
+                    <span class="text-sm" style="color:#9A3412;line-height:1.4">{{ preview?.ai_summary }}</span>
+                  </div>
                 </div>
               </div>
-             }
+            }
 
-             @if(classifying) {
-              <div class="mt-2 text-gray-400 text-xs animate-pulse">
-                AI is analyzing...
+            @if (classifying) {
+              <div class="flex items-center gap-2 text-xs" style="color:#C2410C">
+                <span class="animate-pulse">AI is analyzing...</span>
               </div>
             }
           </div>
 
           <!-- Name + Email -->
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="text-gray-700 text-sm mb-2 block">Your name</label>
+          <div class="flex gap-4">
+            <div class="flex-1 flex flex-col gap-1.5">
+              <label class="text-[var(--foreground)] text-sm font-medium" style="line-height:1.4">Your name</label>
               <input
                 formControlName="name"
                 type="text"
                 placeholder="Anderson"
-                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-900 text-sm focus:outline-none focus:border-blue-500 placeholder-gray-400"
+                class="w-full focus:outline-none"
+                style="height:40px;border-radius:12px;background:#F9FAFB;border:1px solid var(--card-border);color:var(--foreground);padding:0 16px;font-size:14px;font-family:inherit"
               />
             </div>
-            <div>
-              <label class="text-gray-700 text-sm mb-2 block">Email</label>
+            <div class="flex-1 flex flex-col gap-1.5">
+              <label class="text-[var(--foreground)] text-sm font-medium" style="line-height:1.4">Email</label>
               <input
                 formControlName="email"
                 type="email"
                 placeholder="anderson@example.com"
-                class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-900 text-sm focus:outline-none focus:border-blue-500 placeholder-gray-400"
+                class="w-full focus:outline-none"
+                style="height:40px;border-radius:12px;background:#F9FAFB;border:1px solid var(--card-border);color:var(--foreground);padding:0 16px;font-size:14px;font-family:inherit"
               />
             </div>
           </div>
 
           <!-- Source app -->
-          <div>
-            <label class="text-gray-700 text-sm mb-2 block">App name</label>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[var(--foreground)] text-sm font-medium" style="line-height:1.4">App name</label>
             <input
               formControlName="sourceApp"
               type="text"
               placeholder="my-app"
-              class="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-gray-900 text-sm focus:outline-none focus:border-blue-500 placeholder-gray-400"
+              class="w-full focus:outline-none"
+              style="height:40px;border-radius:12px;background:#F9FAFB;border:1px solid var(--card-border);color:var(--foreground);padding:0 16px;font-size:14px;font-family:inherit"
             />
           </div>
 
@@ -138,16 +119,18 @@ import { BugContext } from '../../core/models/bug-content';
           <button
             type="submit"
             [disabled]="form.invalid || loading"
-            class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-lg py-3 text-sm font-medium transition-colors"
+            class="btn btn-primary w-full justify-center"
+            style="height:48px;font-weight:600"
           >
             {{ loading ? 'Sending to AI...' : 'Submit Bug Report' }}
           </button>
 
-          <p class="text-gray-400 text-xs text-center">
+          <p class="text-center text-xs text-[var(--muted-foreground)]" style="line-height:1.4">
             Browser context captured automatically
           </p>
         </form>
-      </div>
+      }
+
     </div>
   `,
 })
@@ -220,10 +203,10 @@ export class BugReport {
   severityClass(severity?: string) {
     const s = severity?.toLowerCase();
     return {
-      'bg-red-500/20 text-red-400': s === 'critical',
-      'bg-orange-500/20 text-orange-400': s === 'high',
-      'bg-yellow-500/20 text-yellow-400': s === 'medium',
-      'bg-green-500/20 text-green-400': s === 'low',
+      'badge-critical': s === 'critical',
+      'badge-high': s === 'high',
+      'badge-medium': s === 'medium',
+      'badge-low': s === 'low',
     };
   }
 }
