@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
 from datetime import datetime
@@ -12,7 +12,7 @@ class BugContext (BaseModel):
 
 # This is the schema for creating a bug report
 class CreateBugRequest(BaseModel):
-    raw_description: str
+    raw_description: str = Field(..., min_length=1)
     reporter_email: Optional[str] = None
     reporter_name: Optional[str] = None
     source_app: Optional[str] = None

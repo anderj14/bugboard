@@ -9,6 +9,9 @@ from contextlib import asynccontextmanager
 from app.database.connection import Base, get_db
 from app.main import app
 from app.models.bug import BugStatus, SeverityLevel
+from app.core.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 engine = create_engine(
     "sqlite://",
@@ -31,7 +34,7 @@ async def override_lifespan(_app):
     yield
 
 
-app.lifespan = override_lifespan
+app.router.lifespan_context = override_lifespan
 
 
 @pytest.fixture(autouse=True)
@@ -53,6 +56,8 @@ def db():
 @pytest.fixture
 def client():
     app.dependency_overrides[get_db] = override_get_db
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()

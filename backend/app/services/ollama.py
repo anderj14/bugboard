@@ -53,7 +53,7 @@ async def classify_bug(description: str, context: dict = None) -> dict:
         if context.get("browser"):
             parts.append(f"Browser: {context['browser']}")
         if context.get("operating_system"):
-            parts.append(f"Operative System: {context['operating_system']}")
+            parts.append(f"Operating System: {context['operating_system']}")
         if context.get("current_url"):
             parts.append(f"Current URL: {context['current_url']}")
         if context.get("screen_resolution"):
@@ -82,14 +82,13 @@ async def classify_bug(description: str, context: dict = None) -> dict:
     if start == -1:
         raise ValueError(f"No JSON found in Ollama response: {raw}")
 
-    # Si no hay } final, agregarlo
+    # Add closing brace if missing
     if end == -1 or end < start:
         json_str = raw[start:] + '}'
     else:
         json_str = raw[start:end+1]
 
-    # Limpiar arrays en reproduction_steps — convertirlos a string
-    import re
+    # Clean arrays in reproduction_steps — convert to string
     json_str = re.sub(
         r'"reproduction_steps":\s*\[([^\]]*)\]',
         lambda m: '"reproduction_steps": "' + 

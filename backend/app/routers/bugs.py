@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from uuid import UUID
 from typing import List
@@ -6,6 +6,7 @@ from app.database.connection import get_db
 from app.models.bug import Bug, BugStatus
 from app.schemas.bug import CreateBugRequest, BugResponse, UpdateStatusRequest
 from app.services.ollama import classify_bug
+from app.core.limiter import limiter
 
 router = APIRouter()
 
@@ -36,7 +37,8 @@ def find_duplicate(db: Session, module: str, title: str, exclude_id=None) -> Bug
 
 # This endpoint receives a bug report, classifies it using the Ollama API, and saves it to the database
 @router.post("/", response_model=BugResponse, status_code=201)
-async def create_bug(payload: CreateBugRequest, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+async def create_bug(payload: CreateBugRequest, request: Request, db: Session = Depends(get_db)):
     try:
         context_dict = payload.context.model_dump() if payload.context else None
         classification = await classify_bug(payload.raw_description, context_dict)
@@ -118,7 +120,8 @@ def update_status(bug_id: UUID, payload: UpdateStatusRequest, db: Session = Depe
 
 # This endpoint allows users to preview the AI classification of a bug report without saving it to the database
 @router.post("/preview", response_model=BugResponse, status_code=200)
-async def preview_bug(payload: CreateBugRequest, db: Session = Depends(get_db)):
+@limiter.limit("20/minute")
+async def preview_bug(payload: CreateBugRequest, request: Request, db: Session = Depends(get_db)):
     try:
         context_dict = payload.context.model_dump() if payload.context else None
         classification = await classify_bug(payload.raw_description, context_dict)
