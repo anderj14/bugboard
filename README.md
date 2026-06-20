@@ -19,7 +19,7 @@ AI-powered bug reporting and classification system. Users report bugs in natural
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Angular 17+ + Tailwind CSS |
+| Frontend | Angular 21 + Tailwind CSS v4 |
 | Backend | Python + FastAPI |
 | AI | Ollama + llama3.2 (runs locally) |
 | Database | PostgreSQL |
@@ -27,28 +27,42 @@ AI-powered bug reporting and classification system. Users report bugs in natural
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Option A: Docker (recomendado)
+
+```bash
+docker compose up --build
+```
+
+Esto levanta PostgreSQL, Ollama (con llama3.2), backend y frontend.
+
+- Frontend: `http://localhost:4200`
+- Backend API: `http://localhost:8000`
+- API docs: `http://localhost:8000/docs`
+
+### Option B: Manual
+
+#### Prerequisites
 
 - [Ollama](https://ollama.ai) installed and running
 - [Docker Desktop](https://docker.com) installed and running
 - Node.js 18+ and npm
 - Python 3.11+
 
-### 1. Clone the repo
+#### 1. Clone the repo
 
 ```bash
 git clone https://github.com/yourusername/bugboard.git
 cd bugboard
 ```
 
-### 2. Start Ollama and pull the model
+#### 2. Start Ollama and pull the model
 
 ```bash
 brew services start ollama
 ollama pull llama3.2
 ```
 
-### 3. Start PostgreSQL
+#### 3. Start PostgreSQL
 
 ```bash
 docker run -d \
@@ -60,7 +74,7 @@ docker run -d \
   postgres:16-alpine
 ```
 
-### 4. Start the backend
+#### 4. Start the backend
 
 ```bash
 cd backend
@@ -73,7 +87,7 @@ uvicorn app.main:app --reload
 Backend running at `http://localhost:8000`
 API docs at `http://localhost:8000/docs`
 
-### 5. Start the frontend
+#### 5. Start the frontend
 
 ```bash
 cd frontend/bugboard-app

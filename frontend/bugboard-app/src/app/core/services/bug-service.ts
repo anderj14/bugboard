@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { CreateBugDto } from '../models/create-bug-dto';
 import { Observable } from 'rxjs';
 import { Bug } from '../models/bug';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ import { Bug } from '../models/bug';
 
 export class BugService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = environment.apiUrl;
 
   createBug(dto: CreateBugDto): Observable<Bug> {
     return this.http.post<Bug>(this.apiUrl + '/bugs', dto);
