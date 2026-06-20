@@ -2,7 +2,10 @@
 
 AI-powered bug reporting and classification system. Users report bugs in natural language and the AI automatically classifies them by severity, module, reproduction steps, and suggested fix.
 
-![BugBoard Dashboard](https://via.placeholder.com/800x400?text=BugBoard+Dashboard)
+![BugBoard Dashboard](screenshots/dashboard.png)
+![Bug Report](screenshots/bug-report.png)
+![Bug Detail](screenshots/bug-detail.png)
+![Metrics](screenshots/metrics.png)
 
 ## ✨ Features
 

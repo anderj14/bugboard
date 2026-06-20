@@ -50,3 +50,6 @@ build/
 Thumbs.db
 *.swp
 *.swo
+
+# Session notes
+NEXT_SESSION.md
